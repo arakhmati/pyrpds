@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/arakhmat/pyrpds.svg?branch=master)](https://travis-ci.org/arakhmat/pyrpds)
+
 # Python Wrapper for Rust Persistent Data Structures
 
 [rpds](https://github.com/orium/rpds) is a Rust package that provides [fully persistent data structures](https://en.wikipedia.org/wiki/Persistent_data_structure)
