@@ -1,0 +1,17 @@
+[package]
+name = "pyrpds"
+version = "0.0.0"
+edition = "2018"
+authors = ["Akhmed Rakhmati <akhmed.rakhmati@gmail.com>"]
+
+[lib]
+name = "pyrpds"
+crate-type = ["cdylib"]
+
+[dependencies.pyo3]
+version = "0.9.2"
+features = ["extension-module"]
+
+[dependencies.rpds]
+version = "0.7.0"
+features = ["serde"]

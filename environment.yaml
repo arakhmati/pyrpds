@@ -1,0 +1,15 @@
+name: pyrpds
+channels:
+  - conda-forge
+dependencies:
+  - black=19.10
+  - networkx=2.4
+  - pip
+  - pytest=5.3.0
+  - pytest-cov=2.8.1
+  - pytest-profiling=1.7.0
+  - pytest-sugar=0.9.2
+  - pytest-xdist=1.31.0
+  - python=3.8
+  - pip:
+      - maturin==0.8.0
