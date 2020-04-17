@@ -1,8 +1,9 @@
 use pyo3::class::basic::CompareOp;
 use pyo3::class::{PyObjectProtocol, PySequenceProtocol};
 use pyo3::prelude::{pyclass, pymethods, pyproto, PyObject, PyResult};
-use pyo3::{PyAny, PyCell};
+use pyo3::{PyAny, PyCell, Python};
 use rpds::Vector;
+use std::hash::{Hash, Hasher};
 
 #[pyclass(name = Vector)]
 pub struct PyVector {
@@ -59,6 +60,21 @@ impl PyVector {
     }
 }
 
+impl Hash for PyVector {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        // Add the hash of length so that if two collections are added one after the other it doesn't
+        // hash to the same thing as a single collection with the same elements in the same order.
+        self.vector.len().hash(state);
+
+        let gil = Python::acquire_gil();
+        let py = gil.python();
+        for element in &self.vector {
+            let element_hash = super::hash::hash_py_object(py, element);
+            element_hash.hash(state);
+        }
+    }
+}
+
 #[pyproto]
 impl PySequenceProtocol for PyVector {
     fn __len__(&self) -> PyResult<usize> {
@@ -70,7 +86,9 @@ impl PySequenceProtocol for PyVector {
 #[pyproto]
 impl PyObjectProtocol for PyVector {
     fn __hash__(&self) -> PyResult<isize> {
-        Ok(0)
+        let mut hasher = std::collections::hash_map::DefaultHasher::new();
+        self.hash(&mut hasher);
+        Ok(hasher.finish() as isize)
     }
 
     fn __richcmp__(&self, other_as_any: &PyAny, op: CompareOp) -> PyResult<bool> {
