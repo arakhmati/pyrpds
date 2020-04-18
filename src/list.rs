@@ -4,50 +4,49 @@ use pyo3::{PyAny, PyCell, Python};
 use pyo3::class::{PyObjectProtocol, PySequenceProtocol};
 use pyo3::class::basic::CompareOp;
 use pyo3::prelude::{pyclass, pymethods, PyObject, pyproto, PyResult};
-use rpds;
 
 #[pyclass]
 pub struct List {
-    list: rpds::List<PyObject>,
+    value: rpds::List<PyObject>,
 }
 
 #[pymethods]
 impl List {
     #[new]
     fn new() -> Self {
-        List { list: rpds::List::new() }
+        List { value: rpds::List::new() }
     }
 
     fn push_front(&mut self, object: PyObject) -> PyResult<Self> {
         let py_list = Self {
-            list: self.list.push_front(object),
+            value: self.value.push_front(object),
         };
         Ok(py_list)
     }
 
     fn drop_first(&mut self) -> PyResult<Self> {
-        let list = match self.list.drop_first() {
+        let value = match self.value.drop_first() {
             Some(list) => list,
             None => panic!("drop_first failed!"),
         };
-        let py_list = Self { list };
+        let py_list = Self { value };
         Ok(py_list)
     }
 
     fn reverse(&self) -> PyResult<Self> {
         let reversed = Self {
-            list: self.list.reverse(),
+            value: self.value.reverse(),
         };
         Ok(reversed)
     }
 
     fn first(&self) -> PyResult<Option<&PyObject>> {
-        let first = self.list.first();
+        let first = self.value.first();
         Ok(first)
     }
 
     fn last(&self) -> PyResult<Option<&PyObject>> {
-        let last = self.list.last();
+        let last = self.value.last();
         Ok(last)
     }
 }
@@ -56,11 +55,11 @@ impl Hash for List {
     fn hash<H: Hasher>(&self, state: &mut H) {
         // Add the hash of length so that if two collections are added one after the other it doesn't
         // hash to the same thing as a single collection with the same elements in the same order.
-        self.list.len().hash(state);
+        self.value.len().hash(state);
 
         let gil = Python::acquire_gil();
         let py = gil.python();
-        for element in self.list.iter() {
+        for element in self.value.iter() {
             let element_hash = super::hash::hash_py_object(py, element);
             element_hash.hash(state);
         }
@@ -70,7 +69,7 @@ impl Hash for List {
 #[pyproto]
 impl PySequenceProtocol for List {
     fn __len__(&self) -> PyResult<usize> {
-        let len = self.list.len();
+        let len = self.value.len();
         Ok(len)
     }
 }
@@ -88,8 +87,8 @@ impl PyObjectProtocol for List {
         let other = other_as_cell.borrow();
 
         match op {
-            CompareOp::Eq => Ok(self.list == other.list),
-            CompareOp::Ne => Ok(self.list != other.list),
+            CompareOp::Eq => Ok(self.value == other.value),
+            CompareOp::Ne => Ok(self.value != other.value),
             _ => panic!("Invalid CompareOp"),
         }
     }
