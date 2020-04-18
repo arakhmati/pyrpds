@@ -1,9 +1,9 @@
 use std::hash::{Hash, Hasher};
 
-use pyo3::{PyAny, PyCell, Python};
-use pyo3::class::{PyObjectProtocol, PySequenceProtocol};
 use pyo3::class::basic::CompareOp;
-use pyo3::prelude::{pyclass, pymethods, PyObject, pyproto, PyResult};
+use pyo3::class::{PyObjectProtocol, PySequenceProtocol};
+use pyo3::prelude::{pyclass, pymethods, pyproto, PyObject, PyResult};
+use pyo3::{PyAny, PyCell, Python};
 
 #[pyclass]
 pub struct List {
@@ -14,7 +14,9 @@ pub struct List {
 impl List {
     #[new]
     fn new() -> Self {
-        List { value: rpds::List::new() }
+        List {
+            value: rpds::List::new(),
+        }
     }
 
     fn push_front(&mut self, object: PyObject) -> PyResult<Self> {

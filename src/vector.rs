@@ -1,10 +1,10 @@
 use std::hash::{Hash, Hasher};
 
-use pyo3::{exceptions, IntoPy, PyAny, PyCell, PyErr, Python};
-use pyo3::class::{PyObjectProtocol, PySequenceProtocol};
 use pyo3::class::basic::CompareOp;
-use pyo3::prelude::{pyclass, pymethods, PyObject, pyproto, PyResult};
+use pyo3::class::{PyObjectProtocol, PySequenceProtocol};
+use pyo3::prelude::{pyclass, pymethods, pyproto, PyObject, PyResult};
 use pyo3::types::PyList;
+use pyo3::{exceptions, IntoPy, PyAny, PyCell, PyErr, Python};
 
 #[pyclass]
 pub struct Vector {
@@ -40,7 +40,9 @@ impl Vector {
         let gil = Python::acquire_gil();
         let py = gil.python();
 
-        let mut py_vector = Self { value: self.value.clone() };
+        let mut py_vector = Self {
+            value: self.value.clone(),
+        };
         for element in list {
             py_vector = Self {
                 value: py_vector.value.push_back(element.into_py(py)),
