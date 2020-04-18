@@ -20,10 +20,10 @@ impl List {
     }
 
     fn push_front(&mut self, object: PyObject) -> PyResult<Self> {
-        let py_list = Self {
+        let new_self = Self {
             value: self.value.push_front(object),
         };
-        Ok(py_list)
+        Ok(new_self)
     }
 
     fn drop_first(&mut self) -> PyResult<Self> {
@@ -31,8 +31,8 @@ impl List {
             Some(list) => list,
             None => panic!("drop_first failed!"),
         };
-        let py_list = Self { value };
-        Ok(py_list)
+        let new_self = Self { value };
+        Ok(new_self)
     }
 
     fn reverse(&self) -> PyResult<Self> {

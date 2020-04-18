@@ -28,10 +28,10 @@ impl Vector {
     }
 
     fn push_back(&mut self, object: PyObject) -> PyResult<Self> {
-        let py_vector = Self {
+        let new_self = Self {
             value: self.value.push_back(object),
         };
-        Ok(py_vector)
+        Ok(new_self)
     }
 
     fn extend(&mut self, list_as_any: &PyAny) -> PyResult<Self> {
@@ -40,15 +40,15 @@ impl Vector {
         let gil = Python::acquire_gil();
         let py = gil.python();
 
-        let mut py_vector = Self {
+        let mut new_self = Self {
             value: self.value.clone(),
         };
         for element in list {
-            py_vector = Self {
-                value: py_vector.value.push_back(element.into_py(py)),
+            new_self = Self {
+                value: new_self.value.push_back(element.into_py(py)),
             };
         }
-        Ok(py_vector)
+        Ok(new_self)
     }
 
     fn drop_last(&mut self) -> PyResult<Self> {
