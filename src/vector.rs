@@ -1,6 +1,6 @@
 use std::hash::{Hash, Hasher};
 
-use pyo3::{IntoPy, PyAny, PyCell, Python};
+use pyo3::{exceptions, IntoPy, PyAny, PyCell, PyErr, Python};
 use pyo3::class::{PyObjectProtocol, PySequenceProtocol};
 use pyo3::class::basic::CompareOp;
 use pyo3::prelude::{pyclass, pymethods, PyObject, pyproto, PyResult};
@@ -22,12 +22,10 @@ impl Vector {
     }
 
     fn set(&self, index: usize, object: PyObject) -> PyResult<Self> {
-        let vector = match self.vector.set(index, object) {
-            Some(vector) => vector,
-            None => panic!("set failed!"),
-        };
-        let py_vector = Self { vector };
-        Ok(py_vector)
+        match self.vector.set(index, object) {
+            Some(vector) => Ok(Self { vector }),
+            None => Err(PyErr::new::<exceptions::IndexError, _>("")),
+        }
     }
 
     fn push_back(&mut self, object: PyObject) -> PyResult<Self> {
@@ -72,6 +70,10 @@ impl Vector {
     }
 
     fn get(&self, index: usize) -> PyResult<Option<&PyObject>> {
+        if index >= self.vector.len() {
+            return Err(PyErr::new::<exceptions::IndexError, _>(""));
+        }
+
         let element = self.vector.get(index);
         Ok(element)
     }
