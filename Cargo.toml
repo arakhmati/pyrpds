@@ -1,8 +1,12 @@
 [package]
-name = "pyrpds"
-version = "0.0.0"
-edition = "2018"
 authors = ["Akhmed Rakhmati <akhmed.rakhmati@gmail.com>"]
+description = "Python Wrapper for Rust Persistent Data Structures"
+edition = "2018"
+license-file = "LICENSE"
+name = "pyrpds"
+readme = "README.md"
+repository = "https://github.com/arakhmat/pyrpds/"
+version = "0.0.0"
 
 [lib]
 name = "pyrpds"
