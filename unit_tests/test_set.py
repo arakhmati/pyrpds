@@ -33,3 +33,11 @@ def test_set():
     assert set_3 != set_4
     assert set_2 == set_4
     assert hash(set_2) == hash(set_4)
+
+
+def test_iter():
+    container = Set()
+    for element in range(100):
+        container.insert(element)
+    for index, element in enumerate(sorted(container)):
+        assert index == element

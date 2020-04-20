@@ -84,3 +84,11 @@ def test_vector():
     assert vector_3 != vector_4
     assert vector_2 == vector_4
     assert hash(vector_2) == hash(vector_4)
+
+
+def test_iter():
+    container = Vector()
+    for element in range(100):
+        container.push_back(element)
+    for index, element in enumerate(sorted(container)):
+        assert index == element

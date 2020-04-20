@@ -4,7 +4,10 @@ use crate::object::{extract_py_object, Object};
 use pyo3::class::basic::CompareOp;
 use pyo3::class::PyObjectProtocol;
 use pyo3::prelude::{pyclass, pymethods, pyproto, PyObject, PyResult};
-use pyo3::{exceptions, PyAny, PyCell, PyErr, PyMappingProtocol, PySequenceProtocol};
+use pyo3::{
+    exceptions, PyAny, PyCell, PyErr, PyIterProtocol, PyMappingProtocol, PyRefMut,
+    PySequenceProtocol,
+};
 
 type RpdsMap = rpds::map::hash_trie_map::HashTrieMap<Object, Object>;
 
@@ -108,6 +111,20 @@ impl PyMappingProtocol for Map {
             return Err(PyErr::new::<exceptions::KeyError, _>("Key not found!"));
         }
         extract_py_object(self.value.get(&key))
+    }
+}
+
+#[pyproto]
+impl PyIterProtocol for Map {
+    fn __iter__(slf: PyRefMut<Self>) -> PyResult<crate::iterators::PyObjectIterator> {
+        let mut elements = std::vec::Vec::new();
+        for element in slf.value.keys() {
+            elements.push(extract_py_object(Some(element))?)
+        }
+
+        Ok(crate::iterators::PyObjectIterator::new(
+            elements.into_iter(),
+        ))
     }
 }
 

@@ -40,3 +40,11 @@ def test_list():
     assert list_3 != list_4
     assert list_2 == list_4
     assert hash(list_2) == hash(list_4)
+
+
+def test_iter():
+    container = List()
+    for element in range(100):
+        container.push_front(element)
+    for index, element in enumerate(container):
+        assert index == element

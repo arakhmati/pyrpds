@@ -4,7 +4,7 @@ use crate::object::{extract_py_object, Object};
 use pyo3::class::basic::CompareOp;
 use pyo3::class::{PyObjectProtocol, PySequenceProtocol};
 use pyo3::prelude::{pyclass, pymethods, pyproto, PyObject, PyResult};
-use pyo3::{PyAny, PyCell};
+use pyo3::{PyAny, PyCell, PyIterProtocol, PyRefMut};
 
 type RpdsList = rpds::List<Object>;
 
@@ -70,6 +70,20 @@ impl PySequenceProtocol for List {
     fn __len__(&self) -> PyResult<usize> {
         let len = self.value.len();
         Ok(len)
+    }
+}
+
+#[pyproto]
+impl PyIterProtocol for List {
+    fn __iter__(slf: PyRefMut<Self>) -> PyResult<crate::iterators::PyObjectIterator> {
+        let mut elements = std::vec::Vec::new();
+        for element in slf.value.iter() {
+            elements.push(extract_py_object(Some(element))?)
+        }
+
+        Ok(crate::iterators::PyObjectIterator::new(
+            elements.into_iter(),
+        ))
     }
 }
 

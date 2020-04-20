@@ -1,10 +1,10 @@
 use std::hash::{Hash, Hasher};
 
-use crate::object::Object;
+use crate::object::{extract_py_object, Object};
 use pyo3::class::basic::CompareOp;
 use pyo3::class::{PyObjectProtocol, PySequenceProtocol};
 use pyo3::prelude::{pyclass, pymethods, pyproto, PyObject, PyResult};
-use pyo3::{PyAny, PyCell};
+use pyo3::{PyAny, PyCell, PyIterProtocol, PyRefMut};
 
 type RpdsSet = rpds::set::hash_trie_set::HashTrieSet<Object>;
 
@@ -57,6 +57,20 @@ impl PySequenceProtocol for Set {
 
     fn __contains__(&self, py_object: PyObject) -> PyResult<bool> {
         Ok(self.value.contains(&Object::new(py_object)))
+    }
+}
+
+#[pyproto]
+impl PyIterProtocol for Set {
+    fn __iter__(slf: PyRefMut<Self>) -> PyResult<crate::iterators::PyObjectIterator> {
+        let mut elements = std::vec::Vec::new();
+        for element in slf.value.iter() {
+            elements.push(extract_py_object(Some(element))?)
+        }
+
+        Ok(crate::iterators::PyObjectIterator::new(
+            elements.into_iter(),
+        ))
     }
 }
 

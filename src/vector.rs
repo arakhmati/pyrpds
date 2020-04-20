@@ -4,7 +4,9 @@ use crate::object::{extract_py_object, Object};
 use pyo3::class::basic::CompareOp;
 use pyo3::class::{PyObjectProtocol, PySequenceProtocol};
 use pyo3::prelude::{pyclass, pymethods, pyproto, PyObject, PyResult};
-use pyo3::{exceptions, AsPyRef, ObjectProtocol, PyAny, PyCell, PyErr, Python};
+use pyo3::{
+    exceptions, AsPyRef, ObjectProtocol, PyAny, PyCell, PyErr, PyIterProtocol, PyRefMut, Python,
+};
 use std::panic;
 
 type RpdsVector = rpds::Vector<Object>;
@@ -102,6 +104,20 @@ impl PySequenceProtocol for Vector {
     fn __len__(&self) -> PyResult<usize> {
         let len = self.value.len();
         Ok(len)
+    }
+}
+
+#[pyproto]
+impl PyIterProtocol for Vector {
+    fn __iter__(slf: PyRefMut<Self>) -> PyResult<crate::iterators::PyObjectIterator> {
+        let mut elements = std::vec::Vec::new();
+        for element in slf.value.iter() {
+            elements.push(extract_py_object(Some(element))?)
+        }
+
+        Ok(crate::iterators::PyObjectIterator::new(
+            elements.into_iter(),
+        ))
     }
 }
 

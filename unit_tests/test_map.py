@@ -51,3 +51,12 @@ def test_map():
     assert map_3 != map_4
     assert map_2 == map_4
     assert hash(map_2) == hash(map_4)
+
+
+def test_iter():
+    container = Map()
+    for key in range(100):
+        value = key
+        container.insert(key, value)
+    for index, key in enumerate(sorted(container)):
+        assert index == key and index == container[key]
