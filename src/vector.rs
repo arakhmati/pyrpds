@@ -1,14 +1,16 @@
 use std::hash::{Hash, Hasher};
 
+use super::object::{extract_optional_py_object, Object};
 use pyo3::class::basic::CompareOp;
 use pyo3::class::{PyObjectProtocol, PySequenceProtocol};
 use pyo3::prelude::{pyclass, pymethods, pyproto, PyObject, PyResult};
 use pyo3::types::PyList;
 use pyo3::{exceptions, IntoPy, PyAny, PyCell, PyErr, Python};
+use std::panic;
 
 #[pyclass]
 pub struct Vector {
-    value: rpds::Vector<PyObject>,
+    value: rpds::Vector<Object>,
 }
 
 #[pymethods]
@@ -20,22 +22,22 @@ impl Vector {
         }
     }
 
-    fn set(&self, index: usize, object: PyObject) -> PyResult<Self> {
-        match self.value.set(index, object) {
+    fn set(&self, index: usize, py_object: PyObject) -> PyResult<Self> {
+        match self.value.set(index, Object::new(py_object)) {
             Some(value) => Ok(Self { value }),
             None => Err(PyErr::new::<exceptions::IndexError, _>("")),
         }
     }
 
-    fn push_back(&mut self, object: PyObject) -> PyResult<Self> {
+    fn push_back(&mut self, py_object: PyObject) -> PyResult<Self> {
         let new_self = Self {
-            value: self.value.push_back(object),
+            value: self.value.push_back(Object::new(py_object)),
         };
         Ok(new_self)
     }
 
     fn extend(&mut self, list_as_any: &PyAny) -> PyResult<Self> {
-        let list = list_as_any.downcast::<PyList>()?;
+        let py_list = list_as_any.downcast::<PyList>()?;
 
         let gil = Python::acquire_gil();
         let py = gil.python();
@@ -43,9 +45,11 @@ impl Vector {
         let mut new_self = Self {
             value: self.value.clone(),
         };
-        for element in list {
+        for element in py_list {
+            let py_object = element.into_py(py);
+            let object = Object::new(py_object);
             new_self = Self {
-                value: new_self.value.push_back(element.into_py(py)),
+                value: new_self.value.push_back(object),
             };
         }
         Ok(new_self)
@@ -61,12 +65,12 @@ impl Vector {
     }
 
     fn first(&self) -> PyResult<Option<&PyObject>> {
-        let first = self.value.first();
+        let first = extract_optional_py_object(self.value.first());
         Ok(first)
     }
 
     fn last(&self) -> PyResult<Option<&PyObject>> {
-        let last = self.value.last();
+        let last = extract_optional_py_object(self.value.last());
         Ok(last)
     }
 
@@ -75,7 +79,7 @@ impl Vector {
             return Err(PyErr::new::<exceptions::IndexError, _>(""));
         }
 
-        let element = self.value.get(index);
+        let element = extract_optional_py_object(self.value.get(index));
         Ok(element)
     }
 }
@@ -85,12 +89,8 @@ impl Hash for Vector {
         // Add the hash of length so that if two collections are added one after the other it doesn't
         // hash to the same thing as a single collection with the same elements in the same order.
         self.value.len().hash(state);
-
-        let gil = Python::acquire_gil();
-        let py = gil.python();
         for element in self.value.iter() {
-            let element_hash = super::hash::hash_py_object(py, element);
-            element_hash.hash(state);
+            element.hash(state);
         }
     }
 }
