@@ -1,4 +1,3 @@
-use pyo3::types::PyTuple;
 use pyo3::{exceptions, import_exception, PyErr, PyObject, PyResult, Python};
 use std::hash::{Hash, Hasher};
 
@@ -20,7 +19,7 @@ impl PartialEq for Object {
         let gil = Python::acquire_gil();
         let py = gil.python();
 
-        let args = PyTuple::new(py, &[&object.py_object]);
+        let args = (&object.py_object, );
         let py_eq = self.py_object.call_method1(py, "__eq__", args);
         let eq = match py_eq {
             Err(_) => Err(PyErr::new::<exceptions::NotImplementedError, _>(
