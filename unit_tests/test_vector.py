@@ -3,8 +3,13 @@ from pyrpds import Vector
 
 def test_vector():
     vector_0 = Vector()
-    assert vector_0.first() is None
-    assert vector_0.last() is None
+
+    try:
+        assert vector_0.first() is None
+        assert vector_0.last() is None
+    except RuntimeError:
+        ...
+
     assert len(vector_0) == 0
     assert hash(vector_0) == -4800647303603446203
 

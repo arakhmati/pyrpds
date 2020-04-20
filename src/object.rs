@@ -23,7 +23,9 @@ impl PartialEq for Object {
         let args = PyTuple::new(py, &[&object.py_object]);
         let py_eq = self.py_object.call_method1(py, "__eq__", args);
         let eq = match py_eq {
-            Err(_) => Err(PyErr::new::<exceptions::NotImplementedError, _>("")),
+            Err(_) => Err(PyErr::new::<exceptions::NotImplementedError, _>(
+                "__eq__ method is not implemented!",
+            )),
             Ok(x) => x.extract::<bool>(py),
         };
         match eq {
@@ -38,7 +40,9 @@ impl Eq for Object {}
 fn hash_object(py: Python, object: &Object) -> PyResult<isize> {
     let element_hash_object = object.py_object.call_method0(py, "__hash__");
     match element_hash_object {
-        Err(_) => Err(PyErr::new::<exceptions::NotImplementedError, _>("")),
+        Err(_) => Err(PyErr::new::<exceptions::NotImplementedError, _>(
+            "__hash__ method is not implemented!",
+        )),
         Ok(x) => x.extract::<isize>(py),
     }
 }
@@ -57,9 +61,11 @@ impl Hash for Object {
     }
 }
 
-pub fn extract_optional_py_object(object: Option<&Object>) -> Option<&PyObject> {
+pub fn extract_py_object(object: Option<&Object>) -> PyResult<&PyObject> {
     match object {
-        Some(x) => Some(&x.py_object),
-        None => None,
+        Some(object) => Ok(&object.py_object),
+        None => Err(PyErr::new::<exceptions::RuntimeError, _>(
+            "Invalid call. Most likely container is empty!",
+        )),
     }
 }

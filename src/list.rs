@@ -1,6 +1,6 @@
 use std::hash::{Hash, Hasher};
 
-use super::object::{extract_optional_py_object, Object};
+use super::object::{extract_py_object, Object};
 use pyo3::class::basic::CompareOp;
 use pyo3::class::{PyObjectProtocol, PySequenceProtocol};
 use pyo3::prelude::{pyclass, pymethods, pyproto, PyObject, PyResult};
@@ -43,14 +43,12 @@ impl List {
         Ok(reversed)
     }
 
-    fn first(&self) -> PyResult<Option<&PyObject>> {
-        let first = extract_optional_py_object(self.value.first());
-        Ok(first)
+    fn first(&self) -> PyResult<&PyObject> {
+        extract_py_object(self.value.first())
     }
 
-    fn last(&self) -> PyResult<Option<&PyObject>> {
-        let last = extract_optional_py_object(self.value.last());
-        Ok(last)
+    fn last(&self) -> PyResult<&PyObject> {
+        extract_py_object(self.value.last())
     }
 }
 

@@ -1,6 +1,6 @@
 use std::hash::{Hash, Hasher};
 
-use super::object::{extract_optional_py_object, Object};
+use super::object::{extract_py_object, Object};
 use pyo3::class::basic::CompareOp;
 use pyo3::class::{PyObjectProtocol, PySequenceProtocol};
 use pyo3::prelude::{pyclass, pymethods, pyproto, PyObject, PyResult};
@@ -25,7 +25,9 @@ impl Vector {
     fn set(&self, index: usize, py_object: PyObject) -> PyResult<Self> {
         match self.value.set(index, Object::new(py_object)) {
             Some(value) => Ok(Self { value }),
-            None => Err(PyErr::new::<exceptions::IndexError, _>("")),
+            None => Err(PyErr::new::<exceptions::IndexError, _>(
+                "Index out of bounds!",
+            )),
         }
     }
 
@@ -64,23 +66,22 @@ impl Vector {
         Ok(py_vector)
     }
 
-    fn first(&self) -> PyResult<Option<&PyObject>> {
-        let first = extract_optional_py_object(self.value.first());
-        Ok(first)
+    fn first(&self) -> PyResult<&PyObject> {
+        extract_py_object(self.value.first())
     }
 
-    fn last(&self) -> PyResult<Option<&PyObject>> {
-        let last = extract_optional_py_object(self.value.last());
-        Ok(last)
+    fn last(&self) -> PyResult<&PyObject> {
+        extract_py_object(self.value.last())
     }
 
-    fn get(&self, index: usize) -> PyResult<Option<&PyObject>> {
+    fn get(&self, index: usize) -> PyResult<&PyObject> {
         if index >= self.value.len() {
-            return Err(PyErr::new::<exceptions::IndexError, _>(""));
+            return Err(PyErr::new::<exceptions::IndexError, _>(
+                "Index out of bounds!",
+            ));
         }
 
-        let element = extract_optional_py_object(self.value.get(index));
-        Ok(element)
+        extract_py_object(self.value.get(index))
     }
 }
 
