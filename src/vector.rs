@@ -4,8 +4,7 @@ use super::object::{extract_py_object, Object};
 use pyo3::class::basic::CompareOp;
 use pyo3::class::{PyObjectProtocol, PySequenceProtocol};
 use pyo3::prelude::{pyclass, pymethods, pyproto, PyObject, PyResult};
-use pyo3::types::PyList;
-use pyo3::{exceptions, IntoPy, PyAny, PyCell, PyErr, Python};
+use pyo3::{exceptions, AsPyRef, ObjectProtocol, PyAny, PyCell, PyErr, Python};
 use std::panic;
 
 #[pyclass]
@@ -38,18 +37,18 @@ impl Vector {
         Ok(new_self)
     }
 
-    fn extend(&mut self, list_as_any: &PyAny) -> PyResult<Self> {
-        let py_list = list_as_any.downcast::<PyList>()?;
+    fn extend(&mut self, iterator: PyObject) -> PyResult<Self> {
+        let gil_guard = Python::acquire_gil();
+        let py = gil_guard.python();
 
-        let gil = Python::acquire_gil();
-        let py = gil.python();
+        let iterator = iterator.as_ref(py).iter().unwrap();
 
         let mut new_self = Self {
             value: self.value.clone(),
         };
-        for element in py_list {
-            let py_object = element.into_py(py);
-            let object = Object::new(py_object);
+        for element in iterator {
+            let element = element.unwrap().extract::<PyObject>()?;
+            let object = Object::new(element);
             new_self = Self {
                 value: new_self.value.push_back(object),
             };

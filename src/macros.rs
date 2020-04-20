@@ -11,9 +11,9 @@ macro_rules! py_object_protocol {
                 Ok(hasher.finish() as isize)
             }
 
-            fn __richcmp__(&self, other_as_any: &PyAny, op: CompareOp) -> PyResult<bool> {
-                let other_as_cell = other_as_any.downcast::<PyCell<$struct_>>()?;
-                let other = other_as_cell.borrow();
+            fn __richcmp__(&self, other: &PyAny, op: CompareOp) -> PyResult<bool> {
+                let other = other.downcast::<PyCell<$struct_>>()?;
+                let other = other.borrow();
 
                 match op {
                     CompareOp::Eq => Ok(self.value == other.value),
