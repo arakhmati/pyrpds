@@ -108,11 +108,7 @@ impl PySequenceProtocol for Map {
 #[pyproto]
 impl PyMappingProtocol for Map {
     fn __getitem__(&self, item: PyObject) -> PyResult<PyObject> {
-        let key = Object::new(item);
-        if !self.value.contains_key(&key) {
-            return Err(PyErr::new::<exceptions::KeyError, _>("Key not found!"));
-        }
-        extract_py_object(self.value.get(&key))
+        self.get(item)
     }
 }
 

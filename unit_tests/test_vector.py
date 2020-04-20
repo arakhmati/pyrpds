@@ -36,7 +36,9 @@ def test_vector():
     vector_1 = vector_0.push_back(0)
     assert vector_1.first() is 0
     assert vector_1.get(0) is 0
+    assert vector_1[0] == 0
     assert vector_1.last() is 0
+    assert 0 in vector_1
     assert len(vector_1) == 1
     assert hash(vector_1) == -8559946577813192710
 
@@ -44,7 +46,9 @@ def test_vector():
     assert vector_2.first() is 0
     assert vector_2.last() is "1"
     assert vector_2.get(0) is 0
+    assert vector_2[0] == 0
     assert vector_2.get(1) is "1"
+    assert vector_2[1] == "1"
     assert len(vector_2) == 2
 
     vector_3 = vector_2.push_back(2)

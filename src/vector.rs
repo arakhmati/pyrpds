@@ -108,6 +108,10 @@ impl PySequenceProtocol for Vector {
         let len = self.value.len();
         Ok(len)
     }
+
+    fn __getitem__(&self, index: isize) -> PyResult<PyObject> {
+        self.get(index as usize)
+    }
 }
 
 #[pyproto]
