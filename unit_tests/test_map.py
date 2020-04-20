@@ -1,8 +1,8 @@
-from pyrpds import Map
+from pyrpds import pmap
 
 
 def test_map():
-    map_0 = Map()
+    map_0 = pmap()
     assert len(map_0) == 0
     assert hash(map_0) == -4800647303603446203
     assert set(map_0.values()) == set()
@@ -62,7 +62,7 @@ def test_pmap_constuctor():
 
 
 def test_iter():
-    container = Map()
+    container = pmap()
     for key in range(100):
         value = key
         container.insert(key, value)
