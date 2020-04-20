@@ -1,6 +1,7 @@
 use pyo3::prelude::{pymodule, PyModule, PyResult, Python};
 
 mod macros; #[rustfmt::skip]
+mod iterators;
 mod list;
 mod map;
 mod object;

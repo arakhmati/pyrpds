@@ -1,14 +1,16 @@
 use std::hash::{Hash, Hasher};
 
-use super::object::Object;
+use crate::object::Object;
 use pyo3::class::basic::CompareOp;
 use pyo3::class::{PyObjectProtocol, PySequenceProtocol};
 use pyo3::prelude::{pyclass, pymethods, pyproto, PyObject, PyResult};
 use pyo3::{PyAny, PyCell};
 
+type RpdsSet = rpds::set::hash_trie_set::HashTrieSet<Object>;
+
 #[pyclass]
 pub struct Set {
-    value: rpds::set::hash_trie_set::HashTrieSet<Object>,
+    value: RpdsSet,
 }
 
 #[pymethods]
@@ -16,7 +18,7 @@ impl Set {
     #[new]
     fn new() -> Self {
         Set {
-            value: rpds::set::hash_trie_set::HashTrieSet::new(),
+            value: RpdsSet::new(),
         }
     }
 

@@ -1,15 +1,17 @@
 use std::hash::{Hash, Hasher};
 
-use super::object::{extract_py_object, Object};
+use crate::object::{extract_py_object, Object};
 use pyo3::class::basic::CompareOp;
 use pyo3::class::{PyObjectProtocol, PySequenceProtocol};
 use pyo3::prelude::{pyclass, pymethods, pyproto, PyObject, PyResult};
 use pyo3::{exceptions, AsPyRef, ObjectProtocol, PyAny, PyCell, PyErr, Python};
 use std::panic;
 
+type RpdsVector = rpds::Vector<Object>;
+
 #[pyclass]
 pub struct Vector {
-    value: rpds::Vector<Object>,
+    value: RpdsVector,
 }
 
 #[pymethods]
@@ -17,7 +19,7 @@ impl Vector {
     #[new]
     fn new() -> Self {
         Vector {
-            value: rpds::Vector::new(),
+            value: RpdsVector::new(),
         }
     }
 
@@ -65,15 +67,15 @@ impl Vector {
         Ok(py_vector)
     }
 
-    fn first(&self) -> PyResult<&PyObject> {
+    fn first(&self) -> PyResult<PyObject> {
         extract_py_object(self.value.first())
     }
 
-    fn last(&self) -> PyResult<&PyObject> {
+    fn last(&self) -> PyResult<PyObject> {
         extract_py_object(self.value.last())
     }
 
-    fn get(&self, index: usize) -> PyResult<&PyObject> {
+    fn get(&self, index: usize) -> PyResult<PyObject> {
         if index >= self.value.len() {
             return Err(PyErr::new::<exceptions::IndexError, _>(
                 "Index out of bounds!",

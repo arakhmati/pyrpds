@@ -1,14 +1,16 @@
 use std::hash::{Hash, Hasher};
 
-use super::object::{extract_py_object, Object};
+use crate::object::{extract_py_object, Object};
 use pyo3::class::basic::CompareOp;
 use pyo3::class::{PyObjectProtocol, PySequenceProtocol};
 use pyo3::prelude::{pyclass, pymethods, pyproto, PyObject, PyResult};
 use pyo3::{PyAny, PyCell};
 
+type RpdsList = rpds::List<Object>;
+
 #[pyclass]
 pub struct List {
-    value: rpds::List<Object>,
+    value: RpdsList,
 }
 
 #[pymethods]
@@ -16,7 +18,7 @@ impl List {
     #[new]
     fn new() -> Self {
         List {
-            value: rpds::List::new(),
+            value: RpdsList::new(),
         }
     }
 
@@ -43,11 +45,11 @@ impl List {
         Ok(reversed)
     }
 
-    fn first(&self) -> PyResult<&PyObject> {
+    fn first(&self) -> PyResult<PyObject> {
         extract_py_object(self.value.first())
     }
 
-    fn last(&self) -> PyResult<&PyObject> {
+    fn last(&self) -> PyResult<PyObject> {
         extract_py_object(self.value.last())
     }
 }

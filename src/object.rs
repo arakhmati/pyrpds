@@ -61,9 +61,12 @@ impl Hash for Object {
     }
 }
 
-pub fn extract_py_object(object: Option<&Object>) -> PyResult<&PyObject> {
+pub fn extract_py_object(object: Option<&Object>) -> PyResult<PyObject> {
+    let gil = Python::acquire_gil();
+    let py = gil.python();
+
     match object {
-        Some(object) => Ok(&object.py_object),
+        Some(object) => Ok(object.py_object.clone_ref(py)),
         None => Err(PyErr::new::<exceptions::RuntimeError, _>(
             "Invalid call. Most likely container is empty!",
         )),
