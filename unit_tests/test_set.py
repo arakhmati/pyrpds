@@ -1,4 +1,4 @@
-from pyrpds import pset
+from pyrpds import pset, s
 
 
 def test_set():
@@ -44,6 +44,20 @@ def test_pset_constuctor():
 
     container = pset([0, "1", 2])
     assert len(container) == 3
+
+    container = pset(range(5))
+    assert len(container) == 5
+
+    container = pset(map(lambda x: x, range(10)))
+    assert len(container) == 10
+
+
+def test_s_constuctor():
+    container = s()
+    assert len(container) == 0
+
+    container = s(0, "1", 2, 6, 10)
+    assert len(container) == 5
 
 
 def test_iter():

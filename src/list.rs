@@ -113,9 +113,21 @@ fn plist(args: &PyTuple) -> PyResult<List> {
     Ok(list)
 }
 
+#[pyfunction(args = "*")]
+fn l(args: &PyTuple) -> PyResult<List> {
+    let mut list = List::new();
+
+    for element in args.iter() {
+        let element = element.extract::<PyObject>()?;
+        list = list.push_front(element)?;
+    }
+    Ok(list)
+}
+
 pub fn py_binding(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<List>()?;
     m.add_wrapped(wrap_pyfunction!(plist)).unwrap();
+    m.add_wrapped(wrap_pyfunction!(l)).unwrap();
 
     Ok(())
 }

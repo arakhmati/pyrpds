@@ -1,4 +1,4 @@
-from pyrpds import pvector
+from pyrpds import pvector, v
 
 
 def test_vector():
@@ -96,11 +96,19 @@ def test_pvector_constuctor():
     container = pvector([0, "1", 2])
     assert len(container) == 3
 
-    container = pvector(range(3))
-    assert len(container) == 3
+    container = pvector(range(5))
+    assert len(container) == 5
 
-    container = pvector(map(lambda x: x, range(3)))
-    assert len(container) == 3
+    container = pvector(map(lambda x: x, range(10)))
+    assert len(container) == 10
+
+
+def test_v_constuctor():
+    container = v()
+    assert len(container) == 0
+
+    container = v(0, "1", 2, 6, 10)
+    assert len(container) == 5
 
 
 def test_iter():

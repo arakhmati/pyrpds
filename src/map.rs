@@ -157,9 +157,30 @@ fn pmap(args: &PyTuple) -> PyResult<Map> {
     Ok(map)
 }
 
+#[pyfunction(kwargs = "**")]
+fn m(kwargs: Option<&PyDict>) -> PyResult<Map> {
+    let mut map = Map::new();
+
+    if kwargs == None {
+        return Ok(map);
+    }
+    let kwargs = kwargs.unwrap();
+
+    let gil_guard = Python::acquire_gil();
+    let py = gil_guard.python();
+
+    for (key, value) in kwargs.iter() {
+        let key = key.to_object(py);
+        let value = value.to_object(py);
+        map = map.insert(key, value)?;
+    }
+    Ok(map)
+}
+
 pub fn py_binding(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<Map>()?;
     m.add_wrapped(wrap_pyfunction!(pmap)).unwrap();
+    m.add_wrapped(wrap_pyfunction!(m)).unwrap();
 
     Ok(())
 }

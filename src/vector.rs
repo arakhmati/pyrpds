@@ -145,9 +145,21 @@ fn pvector(args: &PyTuple) -> PyResult<Vector> {
     Ok(vector)
 }
 
+#[pyfunction(args = "*")]
+fn v(args: &PyTuple) -> PyResult<Vector> {
+    let mut vector = Vector::new();
+
+    for element in args.iter() {
+        let element = element.extract::<PyObject>()?;
+        vector = vector.push_back(element)?;
+    }
+    Ok(vector)
+}
+
 pub fn py_binding(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<Vector>()?;
     m.add_wrapped(wrap_pyfunction!(pvector)).unwrap();
+    m.add_wrapped(wrap_pyfunction!(v)).unwrap();
 
     Ok(())
 }

@@ -1,4 +1,4 @@
-from pyrpds import pmap
+from pyrpds import pmap, m
 
 
 def test_map():
@@ -59,6 +59,17 @@ def test_pmap_constuctor():
 
     container = pmap({0: "0", "1": 1, "2": "2"})
     assert len(container) == 3
+
+
+def test_m_constuctor():
+    container = m()
+    assert len(container) == 0
+
+    container = m(a="0", b=1, c="2")
+    assert len(container) == 3
+    assert container["a"] == "0"
+    assert container["b"] == 1
+    assert container["c"] == "2"
 
 
 def test_iter():

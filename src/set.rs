@@ -100,9 +100,21 @@ fn pset(args: &PyTuple) -> PyResult<Set> {
     Ok(set)
 }
 
+#[pyfunction(args = "*")]
+fn s(args: &PyTuple) -> PyResult<Set> {
+    let mut set = Set::new();
+
+    for element in args.iter() {
+        let element = element.extract::<PyObject>()?;
+        set = set.insert(element)?;
+    }
+    Ok(set)
+}
+
 pub fn py_binding(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<Set>()?;
     m.add_wrapped(wrap_pyfunction!(pset)).unwrap();
+    m.add_wrapped(wrap_pyfunction!(s)).unwrap();
 
     Ok(())
 }

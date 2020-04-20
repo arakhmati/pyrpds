@@ -1,4 +1,4 @@
-from pyrpds import plist
+from pyrpds import plist, l
 
 
 def test_list():
@@ -51,6 +51,20 @@ def test_plist_constuctor():
 
     container = plist([0, "1", 2])
     assert len(container) == 3
+
+    container = plist(range(5))
+    assert len(container) == 5
+
+    container = plist(map(lambda x: x, range(10)))
+    assert len(container) == 10
+
+
+def test_l_constuctor():
+    container = l()
+    assert len(container) == 0
+
+    container = l(0, "1", 2, 6, 10)
+    assert len(container) == 5
 
 
 def test_iter():
