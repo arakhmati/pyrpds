@@ -1,8 +1,8 @@
-from pyrpds import List
+from pyrpds import plist
 
 
 def test_list():
-    list_0 = List()
+    list_0 = plist()
 
     try:
         assert list_0.first() is None
@@ -42,8 +42,19 @@ def test_list():
     assert hash(list_2) == hash(list_4)
 
 
+def test_plist_constuctor():
+    container = plist()
+    assert len(container) == 0
+
+    container = plist((0, "1", 2))
+    assert len(container) == 3
+
+    container = plist([0, "1", 2])
+    assert len(container) == 3
+
+
 def test_iter():
-    container = List()
+    container = plist()
     for element in range(100):
         container.push_front(element)
     for index, element in enumerate(container):

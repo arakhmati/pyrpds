@@ -17,15 +17,16 @@ struct Map {
     value: RpdsMap,
 }
 
-#[pymethods]
 impl Map {
-    #[new]
     fn new() -> Self {
         Map {
             value: RpdsMap::new(),
         }
     }
+}
 
+#[pymethods]
+impl Map {
     fn insert(&mut self, py_key: PyObject, py_value: PyObject) -> PyResult<Self> {
         let new_self = Self {
             value: self
@@ -131,15 +132,22 @@ impl PyIterProtocol for Map {
 
 py_object_protocol!(Map);
 
-#[pyfunction]
-fn pmap(dict: PyObject) -> PyResult<Map> {
+#[pyfunction(args = "*")]
+fn pmap(args: &PyTuple) -> PyResult<Map> {
+    let mut map = Map::new();
+    if args.is_empty() {
+        return Ok(map);
+    } else if args.len() > 1 {
+        return Err(PyErr::new::<exceptions::ValueError, _>(
+            "Incorrect number of arguments!!",
+        ));
+    }
+
     let gil_guard = Python::acquire_gil();
     let py = gil_guard.python();
 
-    let dict = dict.as_ref(py).extract::<Py<PyDict>>()?;
+    let dict = args.get_item(0).extract::<Py<PyDict>>()?;
     let dict = dict.as_ref(py);
-
-    let mut map = Map::new();
     for key_value_pair in dict.items() {
         let key_value_pair = key_value_pair.downcast::<PyTuple>()?;
         let key = key_value_pair.get_item(0).to_object(py);

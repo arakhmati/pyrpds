@@ -1,8 +1,8 @@
-from pyrpds import Set
+from pyrpds import pset
 
 
 def test_set():
-    set_0 = Set()
+    set_0 = pset()
     assert len(set_0) == 0
     assert hash(set_0) == -4800647303603446203
 
@@ -35,8 +35,19 @@ def test_set():
     assert hash(set_2) == hash(set_4)
 
 
+def test_pset_constuctor():
+    container = pset()
+    assert len(container) == 0
+
+    container = pset((0, "1", 2))
+    assert len(container) == 3
+
+    container = pset([0, "1", 2])
+    assert len(container) == 3
+
+
 def test_iter():
-    container = Set()
+    container = pset()
     for element in range(100):
         container.insert(element)
     for index, element in enumerate(sorted(container)):

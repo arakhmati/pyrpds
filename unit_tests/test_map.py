@@ -53,6 +53,14 @@ def test_map():
     assert hash(map_2) == hash(map_4)
 
 
+def test_pmap_constuctor():
+    container = pmap()
+    assert len(container) == 0
+
+    container = pmap({0: "0", "1": 1, "2": "2"})
+    assert len(container) == 3
+
+
 def test_iter():
     container = Map()
     for key in range(100):

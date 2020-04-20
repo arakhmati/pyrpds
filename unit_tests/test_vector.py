@@ -1,8 +1,8 @@
-from pyrpds import Vector
+from pyrpds import pvector
 
 
 def test_vector():
-    vector_0 = Vector()
+    vector_0 = pvector()
 
     try:
         assert vector_0.first() is None
@@ -86,8 +86,25 @@ def test_vector():
     assert hash(vector_2) == hash(vector_4)
 
 
+def test_pvector_constuctor():
+    container = pvector()
+    assert len(container) == 0
+
+    container = pvector((0, "1", 2))
+    assert len(container) == 3
+
+    container = pvector([0, "1", 2])
+    assert len(container) == 3
+
+    container = pvector(range(3))
+    assert len(container) == 3
+
+    container = pvector(map(lambda x: x, range(3)))
+    assert len(container) == 3
+
+
 def test_iter():
-    container = Vector()
+    container = pvector()
     for element in range(100):
         container.push_back(element)
     for index, element in enumerate(sorted(container)):
