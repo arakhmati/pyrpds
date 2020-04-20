@@ -3,16 +3,17 @@ use std::hash::{Hash, Hasher};
 use crate::object::{extract_py_object, Object};
 use pyo3::class::basic::CompareOp;
 use pyo3::class::PyObjectProtocol;
-use pyo3::prelude::{pyclass, pymethods, pyproto, PyObject, PyResult};
+use pyo3::prelude::{pyclass, pyfunction, pymethods, pyproto, PyModule, PyObject, PyResult};
+use pyo3::types::{PyDict, PyTuple};
 use pyo3::{
-    exceptions, PyAny, PyCell, PyErr, PyIterProtocol, PyMappingProtocol, PyRefMut,
-    PySequenceProtocol,
+    exceptions, wrap_pyfunction, AsPyRef, ObjectProtocol, Py, PyAny, PyCell, PyErr, PyIterProtocol,
+    PyMappingProtocol, PyRefMut, PySequenceProtocol, Python, ToPyObject,
 };
 
 type RpdsMap = rpds::map::hash_trie_map::HashTrieMap<Object, Object>;
 
 #[pyclass]
-pub struct Map {
+struct Map {
     value: RpdsMap,
 }
 
@@ -129,3 +130,28 @@ impl PyIterProtocol for Map {
 }
 
 py_object_protocol!(Map);
+
+#[pyfunction]
+fn pmap(dict: PyObject) -> PyResult<Map> {
+    let gil_guard = Python::acquire_gil();
+    let py = gil_guard.python();
+
+    let dict = dict.as_ref(py).extract::<Py<PyDict>>()?;
+    let dict = dict.as_ref(py);
+
+    let mut map = Map::new();
+    for key_value_pair in dict.items() {
+        let key_value_pair = key_value_pair.downcast::<PyTuple>()?;
+        let key = key_value_pair.get_item(0).to_object(py);
+        let value = key_value_pair.get_item(1).to_object(py);
+        map = map.insert(key, value)?;
+    }
+    Ok(map)
+}
+
+pub fn py_binding(_py: Python, m: &PyModule) -> PyResult<()> {
+    m.add_class::<Map>()?;
+    m.add_wrapped(wrap_pyfunction!(pmap)).unwrap();
+
+    Ok(())
+}

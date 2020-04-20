@@ -3,7 +3,7 @@ use std::hash::{Hash, Hasher};
 use crate::object::{extract_py_object, Object};
 use pyo3::class::basic::CompareOp;
 use pyo3::class::{PyObjectProtocol, PySequenceProtocol};
-use pyo3::prelude::{pyclass, pymethods, pyproto, PyObject, PyResult};
+use pyo3::prelude::{pyclass, pymethods, pyproto, PyModule, PyObject, PyResult};
 use pyo3::{
     exceptions, AsPyRef, ObjectProtocol, PyAny, PyCell, PyErr, PyIterProtocol, PyRefMut, Python,
 };
@@ -12,7 +12,7 @@ use std::panic;
 type RpdsVector = rpds::Vector<Object>;
 
 #[pyclass]
-pub struct Vector {
+struct Vector {
     value: RpdsVector,
 }
 
@@ -122,3 +122,9 @@ impl PyIterProtocol for Vector {
 }
 
 py_object_protocol!(Vector);
+
+pub fn py_binding(_py: Python, m: &PyModule) -> PyResult<()> {
+    m.add_class::<Vector>()?;
+
+    Ok(())
+}

@@ -3,13 +3,13 @@ use std::hash::{Hash, Hasher};
 use crate::object::{extract_py_object, Object};
 use pyo3::class::basic::CompareOp;
 use pyo3::class::{PyObjectProtocol, PySequenceProtocol};
-use pyo3::prelude::{pyclass, pymethods, pyproto, PyObject, PyResult};
-use pyo3::{PyAny, PyCell, PyIterProtocol, PyRefMut};
+use pyo3::prelude::{pyclass, pymethods, pyproto, PyModule, PyObject, PyResult};
+use pyo3::{PyAny, PyCell, PyIterProtocol, PyRefMut, Python};
 
 type RpdsSet = rpds::set::hash_trie_set::HashTrieSet<Object>;
 
 #[pyclass]
-pub struct Set {
+struct Set {
     value: RpdsSet,
 }
 
@@ -75,3 +75,9 @@ impl PyIterProtocol for Set {
 }
 
 py_object_protocol!(Set);
+
+pub fn py_binding(_py: Python, m: &PyModule) -> PyResult<()> {
+    m.add_class::<Set>()?;
+
+    Ok(())
+}

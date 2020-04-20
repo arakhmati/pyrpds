@@ -3,13 +3,13 @@ use std::hash::{Hash, Hasher};
 use crate::object::{extract_py_object, Object};
 use pyo3::class::basic::CompareOp;
 use pyo3::class::{PyObjectProtocol, PySequenceProtocol};
-use pyo3::prelude::{pyclass, pymethods, pyproto, PyObject, PyResult};
-use pyo3::{PyAny, PyCell, PyIterProtocol, PyRefMut};
+use pyo3::prelude::{pyclass, pymethods, pyproto, PyModule, PyObject, PyResult};
+use pyo3::{PyAny, PyCell, PyIterProtocol, PyRefMut, Python};
 
 type RpdsList = rpds::List<Object>;
 
 #[pyclass]
-pub struct List {
+struct List {
     value: RpdsList,
 }
 
@@ -88,3 +88,9 @@ impl PyIterProtocol for List {
 }
 
 py_object_protocol!(List);
+
+pub fn py_binding(_py: Python, m: &PyModule) -> PyResult<()> {
+    m.add_class::<List>()?;
+
+    Ok(())
+}
