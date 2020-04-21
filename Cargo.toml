@@ -8,6 +8,10 @@ readme = "README.md"
 repository = "https://github.com/arakhmat/pyrpds/"
 version = "0.0.1"
 
+exclude = [
+    "unit_tests",
+]
+
 [lib]
 name = "pyrpds"
 crate-type = ["cdylib"]
