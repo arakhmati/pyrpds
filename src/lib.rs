@@ -5,7 +5,7 @@
 
 use pyo3::prelude::{pymodule, PyModule, PyResult, Python};
 
-mod macros; #[rustfmt::skip]
+pub mod macros; #[rustfmt::skip]
 pub mod iterators;
 pub mod list;
 pub mod map;
