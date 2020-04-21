@@ -7,7 +7,7 @@ def test_map():
     assert hash(map_0) == -4800647303603446203
     assert set(map_0.values()) == set()
 
-    map_1 = map_0.insert(0, 0)
+    map_1 = map_0.set(0, 0)
     assert 0 in map_1
     assert map_1.get(0) == 0
     assert map_1[0] == 0
@@ -15,7 +15,7 @@ def test_map():
     assert hash(map_1) == 2885792717948792520
     assert set(map_1.values()) == {0}
 
-    map_2 = map_1.insert("1", 1)
+    map_2 = map_1.set("1", 1)
     assert 0 in map_2
     assert map_2.get(0) == 0
     assert map_2[0] == 0
@@ -27,7 +27,7 @@ def test_map():
     assert set(map_2.values()) == {0, 1}
     assert set(map_2.items()) == {(0, 0), ("1", 1)}
 
-    map_3 = map_2.insert(2, "2")
+    map_3 = map_2.set(2, "2")
     assert 0 in map_3
     assert map_3.get(0) == 0
     assert "1" in map_3
@@ -76,6 +76,6 @@ def test_iter():
     container = pmap()
     for key in range(100):
         value = key
-        container.insert(key, value)
+        container.set(key, value)
     for index, key in enumerate(sorted(container)):
         assert index == key and index == container[key]

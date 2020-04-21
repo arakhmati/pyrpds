@@ -6,17 +6,17 @@ def test_set():
     assert len(set_0) == 0
     assert hash(set_0) == -4800647303603446203
 
-    set_1 = set_0.insert(0)
+    set_1 = set_0.add(0)
     assert 0 in set_1
     assert len(set_1) == 1
     assert hash(set_1) == -8559946577813192710
 
-    set_2 = set_1.insert("1")
+    set_2 = set_1.add("1")
     assert 0 in set_2
     assert "1" in set_2
     assert len(set_2) == 2
 
-    set_3 = set_2.insert(2)
+    set_3 = set_2.add(2)
     assert 0 in set_3
     assert "1" in set_3
     assert 2 in set_3
@@ -63,6 +63,6 @@ def test_s_constuctor():
 def test_iter():
     container = pset()
     for element in range(100):
-        container.insert(element)
+        container.add(element)
     for index, element in enumerate(sorted(container)):
         assert index == element

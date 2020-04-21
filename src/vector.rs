@@ -37,7 +37,7 @@ impl Vector {
         }
     }
 
-    fn push_back(&mut self, py_object: PyObject) -> PyResult<Self> {
+    fn append(&mut self, py_object: PyObject) -> PyResult<Self> {
         let new_self = Self {
             value: self.value.push_back(Object::new(py_object)),
         };
@@ -61,23 +61,6 @@ impl Vector {
             };
         }
         Ok(new_self)
-    }
-
-    fn drop_last(&mut self) -> PyResult<Self> {
-        let value = match self.value.drop_last() {
-            Some(vector) => vector,
-            None => panic!("drop_last failed!"),
-        };
-        let py_vector = Self { value };
-        Ok(py_vector)
-    }
-
-    fn first(&self) -> PyResult<PyObject> {
-        extract_py_object(self.value.first())
-    }
-
-    fn last(&self) -> PyResult<PyObject> {
-        extract_py_object(self.value.last())
     }
 
     fn get(&self, index: usize) -> PyResult<PyObject> {
@@ -144,7 +127,7 @@ fn pvector(args: &PyTuple) -> PyResult<Vector> {
     let iterator = args.get_item(0).as_ref().iter().unwrap();
     for element in iterator {
         let element = element.unwrap().extract::<PyObject>()?;
-        vector = vector.push_back(element)?;
+        vector = vector.append(element)?;
     }
     Ok(vector)
 }
@@ -155,7 +138,7 @@ fn v(args: &PyTuple) -> PyResult<Vector> {
 
     for element in args.iter() {
         let element = element.extract::<PyObject>()?;
-        vector = vector.push_back(element)?;
+        vector = vector.append(element)?;
     }
     Ok(vector)
 }

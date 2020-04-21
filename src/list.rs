@@ -34,15 +34,6 @@ impl List {
         Ok(new_self)
     }
 
-    fn drop_first(&mut self) -> PyResult<Self> {
-        let value = match self.value.drop_first() {
-            Some(list) => list,
-            None => panic!("drop_first failed!"),
-        };
-        let new_self = Self { value };
-        Ok(new_self)
-    }
-
     fn reverse(&self) -> PyResult<Self> {
         let reversed = Self {
             value: self.value.reverse(),
@@ -50,12 +41,9 @@ impl List {
         Ok(reversed)
     }
 
+    #[getter]
     fn first(&self) -> PyResult<PyObject> {
         extract_py_object(self.value.first())
-    }
-
-    fn last(&self) -> PyResult<PyObject> {
-        extract_py_object(self.value.last())
     }
 }
 

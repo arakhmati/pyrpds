@@ -27,7 +27,7 @@ impl Map {
 
 #[pymethods]
 impl Map {
-    fn insert(&mut self, py_key: PyObject, py_value: PyObject) -> PyResult<Self> {
+    fn set(&mut self, py_key: PyObject, py_value: PyObject) -> PyResult<Self> {
         let new_self = Self {
             value: self
                 .value
@@ -148,7 +148,7 @@ fn pmap(args: &PyTuple) -> PyResult<Map> {
         let key_value_pair = key_value_pair.downcast::<PyTuple>()?;
         let key = key_value_pair.get_item(0).to_object(py);
         let value = key_value_pair.get_item(1).to_object(py);
-        map = map.insert(key, value)?;
+        map = map.set(key, value)?;
     }
     Ok(map)
 }
@@ -168,7 +168,7 @@ fn m(kwargs: Option<&PyDict>) -> PyResult<Map> {
     for (key, value) in kwargs.iter() {
         let key = key.to_object(py);
         let value = value.to_object(py);
-        map = map.insert(key, value)?;
+        map = map.set(key, value)?;
     }
     Ok(map)
 }

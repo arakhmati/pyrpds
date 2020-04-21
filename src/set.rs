@@ -27,7 +27,7 @@ impl Set {
 
 #[pymethods]
 impl Set {
-    fn insert(&mut self, py_object: PyObject) -> PyResult<Self> {
+    fn add(&mut self, py_object: PyObject) -> PyResult<Self> {
         let new_self = Self {
             value: self.value.insert(Object::new(py_object)),
         };
@@ -95,7 +95,7 @@ fn pset(args: &PyTuple) -> PyResult<Set> {
     let iterator = args.get_item(0).as_ref().iter().unwrap();
     for element in iterator {
         let element = element.unwrap().extract::<PyObject>()?;
-        set = set.insert(element)?;
+        set = set.add(element)?;
     }
     Ok(set)
 }
@@ -106,7 +106,7 @@ fn s(args: &PyTuple) -> PyResult<Set> {
 
     for element in args.iter() {
         let element = element.extract::<PyObject>()?;
-        set = set.insert(element)?;
+        set = set.add(element)?;
     }
     Ok(set)
 }
