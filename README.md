@@ -1,4 +1,6 @@
 [![Build Status](https://travis-ci.org/arakhmat/pyrpds.svg?branch=master)](https://travis-ci.org/arakhmat/pyrpds)
+[![Crates.io](https://img.shields.io/crates/v/pyrpds.svg?style=flat-square)](https://crates.io/crates/pyrpds)
+[![PyPI](https://img.shields.io/pypi/v/pyrpds.svg?style=flat-square)](https://pypi.org/project/pyrpds/)
 
 # Python Wrapper for Rust Persistent Data Structures
 
@@ -12,6 +14,13 @@ Python API will be exactly the same as [pyrsistent API](https://pyrsistent.readt
 
 
 # Installation Instructions
+
+## For Users
+```bash
+pip install pyrpds
+```
+
+## For Contributors
 
 ### Installing Dependencies
 
