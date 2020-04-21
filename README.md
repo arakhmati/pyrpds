@@ -49,7 +49,7 @@ conda env create -f environment.yaml
 ### Installing pyrpds
 ```bash
 conda activate pyrpds
-maturin develop --release -m lib/pyrpds/Cargo.toml
+maturin build
 ```
 
 
