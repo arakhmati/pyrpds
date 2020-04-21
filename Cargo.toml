@@ -6,7 +6,7 @@ license-file = "LICENSE"
 name = "pyrpds"
 readme = "README.md"
 repository = "https://github.com/arakhmat/pyrpds/"
-version = "0.0.1"
+version = "0.0.2"
 
 exclude = [
     "unit_tests",
