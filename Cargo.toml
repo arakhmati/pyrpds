@@ -13,12 +13,10 @@ license-file = "LICENSE"
 
 keywords = [
 	"data-structures",
-	"fast",
 	"immutable",
 	"persistent",
 	"pyrsistent",
 	"python",
-	"rust",
 ]
 categories = ["data-structures"]
 
