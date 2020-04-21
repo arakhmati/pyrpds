@@ -13,12 +13,14 @@ use pyo3::{
 type RpdsList = rpds::List<Object>;
 
 #[pyclass]
+#[derive(Default)]
 pub struct List {
     value: RpdsList,
 }
 
 impl List {
-    fn new() -> Self {
+    #[must_use]
+    pub fn new() -> Self {
         List {
             value: RpdsList::new(),
         }

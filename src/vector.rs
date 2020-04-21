@@ -14,12 +14,14 @@ use std::panic;
 type RpdsVector = rpds::Vector<Object>;
 
 #[pyclass]
+#[derive(Default)]
 pub struct Vector {
     value: RpdsVector,
 }
 
 impl Vector {
-    fn new() -> Self {
+    #[must_use]
+    pub fn new() -> Self {
         Vector {
             value: RpdsVector::new(),
         }

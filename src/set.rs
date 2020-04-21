@@ -13,12 +13,14 @@ use pyo3::{
 type RpdsSet = rpds::HashTrieSet<Object>;
 
 #[pyclass]
+#[derive(Default)]
 pub struct Set {
     value: RpdsSet,
 }
 
 impl Set {
-    fn new() -> Self {
+    #[must_use]
+    pub fn new() -> Self {
         Set {
             value: RpdsSet::new(),
         }

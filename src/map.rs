@@ -13,12 +13,14 @@ use pyo3::{
 type RpdsMap = rpds::HashTrieMap<Object, Object>;
 
 #[pyclass]
+#[derive(Default)]
 pub struct Map {
     value: RpdsMap,
 }
 
 impl Map {
-    fn new() -> Self {
+    #[must_use]
+    pub fn new() -> Self {
         Map {
             value: RpdsMap::new(),
         }
