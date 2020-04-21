@@ -2,7 +2,7 @@
 
 #[macro_export]
 macro_rules! py_object_protocol {
-    ($struct_:ident) => {
+    ($struct_:ty) => {
         #[pyproto]
         impl PyObjectProtocol for $struct_ {
             #[allow(clippy::cast_possible_truncation)]

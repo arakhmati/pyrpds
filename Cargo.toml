@@ -1,7 +1,7 @@
 [package]
 name = "pyrpds"
 description = "Python Wrapper for Rust Persistent Data Structures"
-version = "0.0.3"
+version = "0.0.4"
 authors = ["Akhmed Rakhmati <akhmed.rakhmati@gmail.com>"]
 
 edition = "2018"
@@ -26,7 +26,7 @@ exclude = [
 
 [lib]
 name = "pyrpds"
-crate-type = ["rlib", "cdylib"]
+crate-type = ["lib", "cdylib"]
 
 [dependencies.pyo3]
 version = "0.9.2"
