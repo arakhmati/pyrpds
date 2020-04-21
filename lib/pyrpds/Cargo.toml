@@ -1,0 +1,37 @@
+[package]
+name = "pyrpds"
+description = "Python Wrapper for Rust Persistent Data Structures"
+version = "0.0.3"
+authors = ["Akhmed Rakhmati <akhmed.rakhmati@gmail.com>"]
+
+edition = "2018"
+
+homepage = "https://github.com/arakhmat/pyrpds/"
+repository = "https://github.com/arakhmat/pyrpds/"
+readme = "../../README.md"
+license-file = "../../LICENSE"
+
+keywords = [
+	"data-structures",
+	"immutable",
+	"persistent",
+	"pyrsistent",
+	"python",
+]
+categories = ["data-structures"]
+
+exclude = [
+    "unit_tests",
+]
+
+[lib]
+name = "pyrpds"
+crate-type = ["cdylib"]
+
+[dependencies.pyo3]
+version = "0.9.2"
+features = ["extension-module"]
+
+[dependencies.pyrpds-rust]
+version = "0.0.3"
+path = "../pyrpds-rust"
