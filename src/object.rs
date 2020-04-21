@@ -8,6 +8,7 @@ pub struct Object {
 }
 
 impl Object {
+    #[must_use]
     pub fn new(py_object: PyObject) -> Self {
         Object { py_object }
     }

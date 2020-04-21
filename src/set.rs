@@ -10,10 +10,10 @@ use pyo3::{
     Python,
 };
 
-type RpdsSet = rpds::set::hash_trie_set::HashTrieSet<Object>;
+type RpdsSet = rpds::HashTrieSet<Object>;
 
 #[pyclass]
-struct Set {
+pub struct Set {
     value: RpdsSet,
 }
 

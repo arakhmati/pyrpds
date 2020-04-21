@@ -14,7 +14,7 @@ use std::panic;
 type RpdsVector = rpds::Vector<Object>;
 
 #[pyclass]
-struct Vector {
+pub struct Vector {
     value: RpdsVector,
 }
 

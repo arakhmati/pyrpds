@@ -8,6 +8,7 @@ pub struct PyObjectIterator {
 }
 
 impl PyObjectIterator {
+    #[must_use]
     pub fn new(iterator: std::vec::IntoIter<PyObject>) -> Self {
         PyObjectIterator{iterator}
     }
@@ -29,6 +30,7 @@ pub struct PyObjectPairIterator {
 }
 
 impl PyObjectPairIterator {
+    #[must_use]
     pub fn new(iterator: std::vec::IntoIter<(PyObject, PyObject)>) -> Self {
         PyObjectPairIterator{iterator}
     }

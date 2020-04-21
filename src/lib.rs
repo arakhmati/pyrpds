@@ -1,16 +1,23 @@
 #![warn(clippy::all)]
 #![warn(clippy::cargo)]
 #![warn(clippy::pedantic)]
+#![allow(clippy::missing_errors_doc)]
 
 use pyo3::prelude::{pymodule, PyModule, PyResult, Python};
 
 mod macros; #[rustfmt::skip]
-mod iterators;
-mod list;
-mod map;
-mod object;
-mod set;
-mod vector;
+pub mod iterators;
+pub mod list;
+pub mod map;
+pub mod object;
+pub mod set;
+pub mod vector;
+
+pub use crate::list::List;
+pub use crate::map::Map;
+pub use crate::object::Object;
+pub use crate::set::Set;
+pub use crate::vector::Vector;
 
 #[pymodule]
 fn pyrpds(py: Python, m: &PyModule) -> PyResult<()> {

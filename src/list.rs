@@ -13,7 +13,7 @@ use pyo3::{
 type RpdsList = rpds::List<Object>;
 
 #[pyclass]
-struct List {
+pub struct List {
     value: RpdsList,
 }
 

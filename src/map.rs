@@ -10,10 +10,10 @@ use pyo3::{
     PyMappingProtocol, PyRefMut, PySequenceProtocol, Python, ToPyObject,
 };
 
-type RpdsMap = rpds::map::hash_trie_map::HashTrieMap<Object, Object>;
+type RpdsMap = rpds::HashTrieMap<Object, Object>;
 
 #[pyclass]
-struct Map {
+pub struct Map {
     value: RpdsMap,
 }
 
