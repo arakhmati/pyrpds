@@ -16,8 +16,17 @@ Python API will be exactly the same as [pyrsistent API](https://pyrsistent.readt
 # Installation Instructions
 
 ## For Users
+
+### Python
 ```bash
 pip install pyrpds
+```
+
+### Rust
+Add following lines to Cargo.toml:
+```toml
+[dependencies.pyrpds]
+version = "0.0.1"
 ```
 
 ## For Contributors
