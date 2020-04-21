@@ -30,5 +30,5 @@ script:
   - black . --check
   - cargo fmt -- --check
   - cargo clippy --all-targets --all-features -- -D warnings
-  - maturin develop --release -m lib/pyrpds/Cargo.toml
+  - maturin develop --release
   - pytest
