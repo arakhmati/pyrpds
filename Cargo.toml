@@ -7,6 +7,8 @@ name = "pyrpds"
 readme = "README.md"
 repository = "https://github.com/arakhmat/pyrpds/"
 version = "0.0.2"
+keywords = ["python", "rust", "pyrsistent", "persistent", "fast"]
+categories = ["data-structures"]
 
 exclude = [
     "unit_tests",

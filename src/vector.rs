@@ -44,6 +44,7 @@ impl Vector {
         Ok(new_self)
     }
 
+    #[allow(clippy::needless_pass_by_value)]
     fn extend(&mut self, iterator: PyObject) -> PyResult<Self> {
         let gil_guard = Python::acquire_gil();
         let py = gil_guard.python();
@@ -92,6 +93,7 @@ impl PySequenceProtocol for Vector {
         Ok(len)
     }
 
+    #[allow(clippy::cast_sign_loss)]
     fn __getitem__(&self, index: isize) -> PyResult<PyObject> {
         self.get(index as usize)
     }

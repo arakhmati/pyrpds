@@ -60,6 +60,7 @@ impl Hash for Object {
     }
 }
 
+#[allow(clippy::module_name_repetitions)]
 pub fn extract_py_object(object: Option<&Object>) -> PyResult<PyObject> {
     let gil = Python::acquire_gil();
     let py = gil.python();

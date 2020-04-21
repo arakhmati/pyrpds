@@ -5,6 +5,8 @@ macro_rules! py_object_protocol {
     ($struct_:ident) => {
         #[pyproto]
         impl PyObjectProtocol for $struct_ {
+            #[allow(clippy::cast_possible_truncation)]
+            #[allow(clippy::cast_possible_wrap)]
             fn __hash__(&self) -> PyResult<isize> {
                 let mut hasher = std::collections::hash_map::DefaultHasher::new();
                 self.hash(&mut hasher);
