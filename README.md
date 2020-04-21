@@ -26,7 +26,7 @@ pip install pyrpds
 Add following lines to Cargo.toml:
 ```toml
 [dependencies.pyrpds]
-version = "0.0.1"
+version = "<version>"
 ```
 
 ## For Contributors
