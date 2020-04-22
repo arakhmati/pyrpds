@@ -66,7 +66,9 @@ impl Clone for Object {
         let gil = Python::acquire_gil();
         let py = gil.python();
 
-        Self { py_object: self.py_object.clone_ref(py) }
+        Self {
+            py_object: self.py_object.clone_ref(py),
+        }
     }
 }
 

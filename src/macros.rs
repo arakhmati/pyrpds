@@ -13,7 +13,11 @@ macro_rules! py_object_protocol {
                 Ok(hasher.finish() as isize)
             }
 
-            fn __richcmp__(&self, other: &PyAny, op: pyo3::class::basic::CompareOp) -> pyo3::PyResult<bool> {
+            fn __richcmp__(
+                &self,
+                other: &PyAny,
+                op: pyo3::class::basic::CompareOp,
+            ) -> pyo3::PyResult<bool> {
                 let other = other.downcast::<PyCell<$struct_>>()?;
                 let other = other.borrow();
 
