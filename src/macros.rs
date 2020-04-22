@@ -13,13 +13,13 @@ macro_rules! py_object_protocol {
                 Ok(hasher.finish() as isize)
             }
 
-            fn __richcmp__(&self, other: &PyAny, op: CompareOp) -> PyResult<bool> {
+            fn __richcmp__(&self, other: &PyAny, op: pyo3::class::basic::CompareOp) -> pyo3::PyResult<bool> {
                 let other = other.downcast::<PyCell<$struct_>>()?;
                 let other = other.borrow();
 
                 match op {
-                    CompareOp::Eq => Ok(self.value == other.value),
-                    CompareOp::Ne => Ok(self.value != other.value),
+                    pyo3::class::basic::CompareOp::Eq => Ok(self.value == other.value),
+                    pyo3::class::basic::CompareOp::Ne => Ok(self.value != other.value),
                     _ => panic!("Invalid CompareOp"),
                 }
             }

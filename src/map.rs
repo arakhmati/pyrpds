@@ -1,7 +1,6 @@
 use std::hash::{Hash, Hasher};
 
 use crate::object::{extract_py_object, Object};
-use pyo3::class::basic::CompareOp;
 use pyo3::class::PyObjectProtocol;
 use pyo3::prelude::{pyclass, pyfunction, pymethods, pyproto, PyModule, PyObject, PyResult};
 use pyo3::types::{PyDict, PyTuple};
