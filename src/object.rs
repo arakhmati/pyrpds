@@ -61,6 +61,15 @@ impl Hash for Object {
     }
 }
 
+impl Clone for Object {
+    fn clone(&self) -> Self {
+        let gil = Python::acquire_gil();
+        let py = gil.python();
+
+        Self { py_object: self.py_object.clone_ref(py) }
+    }
+}
+
 #[allow(clippy::module_name_repetitions)]
 pub fn extract_py_object(object: Option<&Object>) -> PyResult<PyObject> {
     let gil = Python::acquire_gil();

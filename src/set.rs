@@ -29,14 +29,14 @@ impl Set {
 
 #[pymethods]
 impl Set {
-    fn add(&mut self, py_object: PyObject) -> PyResult<Self> {
+    pub fn add(&mut self, py_object: PyObject) -> PyResult<Self> {
         let new_self = Self {
             value: self.value.insert(Object::new(py_object)),
         };
         Ok(new_self)
     }
 
-    fn remove(&mut self, py_object: PyObject) -> PyResult<Self> {
+    pub fn remove(&mut self, py_object: PyObject) -> PyResult<Self> {
         let new_self = Self {
             value: self.value.remove(&Object::new(py_object)),
         };

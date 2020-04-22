@@ -9,7 +9,6 @@ use pyo3::{
     exceptions, wrap_pyfunction, AsPyRef, ObjectProtocol, PyAny, PyCell, PyErr, PyIterProtocol,
     PyRefMut, Python,
 };
-use std::panic;
 
 type RpdsVector = rpds::Vector<Object>;
 
@@ -30,7 +29,7 @@ impl Vector {
 
 #[pymethods]
 impl Vector {
-    fn set(&self, index: usize, py_object: PyObject) -> PyResult<Self> {
+    pub fn set(&self, index: usize, py_object: PyObject) -> PyResult<Self> {
         match self.value.set(index, Object::new(py_object)) {
             Some(value) => Ok(Self { value }),
             None => Err(PyErr::new::<exceptions::IndexError, _>(
@@ -39,7 +38,7 @@ impl Vector {
         }
     }
 
-    fn append(&mut self, py_object: PyObject) -> PyResult<Self> {
+    pub fn append(&mut self, py_object: PyObject) -> PyResult<Self> {
         let new_self = Self {
             value: self.value.push_back(Object::new(py_object)),
         };
@@ -47,7 +46,7 @@ impl Vector {
     }
 
     #[allow(clippy::needless_pass_by_value)]
-    fn extend(&mut self, iterator: PyObject) -> PyResult<Self> {
+    pub fn extend(&mut self, iterator: PyObject) -> PyResult<Self> {
         let gil_guard = Python::acquire_gil();
         let py = gil_guard.python();
 
@@ -66,7 +65,7 @@ impl Vector {
         Ok(new_self)
     }
 
-    fn get(&self, index: usize) -> PyResult<PyObject> {
+    pub fn get(&self, index: usize) -> PyResult<PyObject> {
         if index >= self.value.len() {
             return Err(PyErr::new::<exceptions::IndexError, _>(
                 "Index out of bounds!",

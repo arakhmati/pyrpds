@@ -29,14 +29,14 @@ impl List {
 
 #[pymethods]
 impl List {
-    fn push_front(&mut self, py_object: PyObject) -> PyResult<Self> {
+    pub fn push_front(&mut self, py_object: PyObject) -> PyResult<Self> {
         let new_self = Self {
             value: self.value.push_front(Object::new(py_object)),
         };
         Ok(new_self)
     }
 
-    fn reverse(&self) -> PyResult<Self> {
+    pub fn reverse(&self) -> PyResult<Self> {
         let reversed = Self {
             value: self.value.reverse(),
         };
@@ -44,7 +44,7 @@ impl List {
     }
 
     #[getter]
-    fn first(&self) -> PyResult<PyObject> {
+    pub fn first(&self) -> PyResult<PyObject> {
         extract_py_object(self.value.first())
     }
 }

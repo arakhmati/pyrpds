@@ -29,7 +29,7 @@ impl Map {
 
 #[pymethods]
 impl Map {
-    fn set(&mut self, py_key: PyObject, py_value: PyObject) -> PyResult<Self> {
+    pub fn set(&mut self, py_key: PyObject, py_value: PyObject) -> PyResult<Self> {
         let new_self = Self {
             value: self
                 .value
@@ -38,14 +38,14 @@ impl Map {
         Ok(new_self)
     }
 
-    fn remove(&mut self, py_key: PyObject) -> PyResult<Self> {
+    pub fn remove(&mut self, py_key: PyObject) -> PyResult<Self> {
         let new_self = Self {
             value: self.value.remove(&Object::new(py_key)),
         };
         Ok(new_self)
     }
 
-    fn get(&self, py_key: PyObject) -> PyResult<PyObject> {
+    pub fn get(&self, py_key: PyObject) -> PyResult<PyObject> {
         let key = Object::new(py_key);
         if !self.value.contains_key(&key) {
             return Err(PyErr::new::<exceptions::KeyError, _>("Key not found!"));
@@ -53,7 +53,7 @@ impl Map {
         extract_py_object(self.value.get(&key))
     }
 
-    fn keys(&self) -> PyResult<crate::iterators::PyObjectIterator> {
+    pub fn keys(&self) -> PyResult<crate::iterators::PyObjectIterator> {
         let mut keys = std::vec::Vec::new();
         for element in self.value.keys() {
             keys.push(extract_py_object(Some(element))?)
@@ -61,7 +61,7 @@ impl Map {
         Ok(crate::iterators::PyObjectIterator::new(keys.into_iter()))
     }
 
-    fn values(&self) -> PyResult<crate::iterators::PyObjectIterator> {
+    pub fn values(&self) -> PyResult<crate::iterators::PyObjectIterator> {
         let mut values = std::vec::Vec::new();
         for element in self.value.values() {
             values.push(extract_py_object(Some(element))?)
@@ -69,7 +69,7 @@ impl Map {
         Ok(crate::iterators::PyObjectIterator::new(values.into_iter()))
     }
 
-    fn items(&self) -> PyResult<crate::iterators::PyObjectPairIterator> {
+    pub fn items(&self) -> PyResult<crate::iterators::PyObjectPairIterator> {
         let mut items = std::vec::Vec::new();
         for (key, value) in self.value.iter() {
             items.push((
