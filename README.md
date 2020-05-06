@@ -49,7 +49,7 @@ conda env create -f environment.yaml
 ### Installing pyrpds
 ```bash
 conda activate pyrpds
-maturin build
+maturin develop
 ```
 
 
