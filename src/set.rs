@@ -1,6 +1,5 @@
 use std::hash::{Hash, Hasher};
 
-use crate::object::{extract_py_object, Object};
 use pyo3::class::{PyObjectProtocol, PySequenceProtocol};
 use pyo3::prelude::{pyclass, pyfunction, pymethods, pyproto, PyModule, PyObject, PyResult};
 use pyo3::types::PyTuple;
@@ -8,6 +7,8 @@ use pyo3::{
     exceptions, wrap_pyfunction, ObjectProtocol, PyAny, PyCell, PyErr, PyIterProtocol, PyRefMut,
     Python,
 };
+
+use crate::object::{extract_py_object, Object};
 
 type RpdsSet = rpds::HashTrieSet<Object>;
 
@@ -81,6 +82,12 @@ impl PyIterProtocol for Set {
 }
 
 py_object_protocol!(Set);
+
+impl std::fmt::Display for Set {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "pset")
+    }
+}
 
 #[pyfunction(args = "*")]
 fn pset(args: &PyTuple) -> PyResult<Set> {

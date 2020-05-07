@@ -53,7 +53,7 @@ def test_map():
     assert hash(map_2) == hash(map_4)
 
 
-def test_pmap_constuctor():
+def test_pmap_constructor():
     container = pmap()
     assert len(container) == 0
 
@@ -61,7 +61,7 @@ def test_pmap_constuctor():
     assert len(container) == 3
 
 
-def test_m_constuctor():
+def test_m_constructor():
     container = m()
     assert len(container) == 0
 

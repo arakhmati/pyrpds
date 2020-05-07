@@ -36,7 +36,7 @@ def test_list():
     assert hash(list_3) == hash(list_4)
 
 
-def test_plist_constuctor():
+def test_plist_constructor():
     container = plist()
     assert len(container) == 0
 
@@ -53,7 +53,7 @@ def test_plist_constuctor():
     assert len(container) == 10
 
 
-def test_l_constuctor():
+def test_l_constructor():
     container = l()
     assert len(container) == 0
 

@@ -1,6 +1,5 @@
 use std::hash::{Hash, Hasher};
 
-use crate::object::{extract_py_object, Object};
 use pyo3::class::PyObjectProtocol;
 use pyo3::prelude::{pyclass, pyfunction, pymethods, pyproto, PyModule, PyObject, PyResult};
 use pyo3::types::{PyDict, PyTuple};
@@ -8,6 +7,8 @@ use pyo3::{
     exceptions, wrap_pyfunction, AsPyRef, ObjectProtocol, Py, PyAny, PyCell, PyErr, PyIterProtocol,
     PyMappingProtocol, PyRefMut, PySequenceProtocol, Python, ToPyObject,
 };
+
+use crate::object::{extract_py_object, Object};
 
 type RpdsMap = rpds::HashTrieMap<Object, Object>;
 
@@ -128,6 +129,12 @@ impl PyIterProtocol for Map {
 }
 
 py_object_protocol!(Map);
+
+impl std::fmt::Display for Map {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "pmap")
+    }
+}
 
 #[pyfunction(args = "*")]
 fn pmap(args: &PyTuple) -> PyResult<Map> {

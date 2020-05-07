@@ -35,7 +35,7 @@ def test_set():
     assert hash(set_2) == hash(set_4)
 
 
-def test_pset_constuctor():
+def test_pset_constructor():
     container = pset()
     assert len(container) == 0
 
@@ -52,7 +52,7 @@ def test_pset_constuctor():
     assert len(container) == 10
 
 
-def test_s_constuctor():
+def test_s_constructor():
     container = s()
     assert len(container) == 0
 
