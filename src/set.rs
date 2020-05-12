@@ -4,8 +4,8 @@ use pyo3::class::{PyObjectProtocol, PySequenceProtocol};
 use pyo3::prelude::{pyclass, pyfunction, pymethods, pyproto, PyModule, PyObject, PyResult};
 use pyo3::types::PyTuple;
 use pyo3::{
-    exceptions, wrap_pyfunction, ObjectProtocol, PyAny, PyCell, PyErr, PyIterProtocol, PyRefMut,
-    Python,
+    exceptions, wrap_pyfunction, AsPyRef, ObjectProtocol, PyAny, PyCell, PyErr, PyIterProtocol,
+    PyRefMut, Python,
 };
 
 use crate::object::{extract_py_object, Object};
@@ -36,10 +36,54 @@ impl Set {
         Ok(new_self)
     }
 
-    pub fn remove(&mut self, py_object: PyObject) -> PyResult<Self> {
+    pub fn discard(&mut self, py_object: PyObject) -> PyResult<Self> {
+        let object = Object::new(py_object);
+
         let new_self = Self {
-            value: self.value.remove(&Object::new(py_object)),
+            value: self.value.remove(&object),
         };
+
+        Ok(new_self)
+    }
+
+    pub fn remove(&mut self, py_object: PyObject) -> PyResult<Self> {
+        let object = Object::new(py_object);
+
+        if !self.value.contains(&object) {
+            println!("GOT EM {}", !self.value.contains(&object));
+            return Err(PyErr::new::<exceptions::KeyError, _>(
+                "Element is not in the set!",
+            ));
+        }
+
+        let new_self = Self {
+            value: self.value.remove(&object),
+        };
+
+        Ok(new_self)
+    }
+
+    pub fn isdisjoint(&mut self, other: &Set) -> PyResult<bool> {
+        Ok(self.value.is_disjoint(&other.value))
+    }
+
+    #[allow(clippy::needless_pass_by_value)]
+    pub fn update(&mut self, iterator: PyObject) -> PyResult<Self> {
+        let gil_guard = Python::acquire_gil();
+        let py = gil_guard.python();
+
+        let iterator = iterator.as_ref(py).iter().unwrap();
+
+        let mut new_self = Self {
+            value: self.value.clone(),
+        };
+        for element in iterator {
+            let element = element.unwrap().extract::<PyObject>()?;
+            let object = Object::new(element);
+            new_self = Self {
+                value: new_self.value.insert(object),
+            };
+        }
         Ok(new_self)
     }
 }
@@ -85,7 +129,16 @@ py_object_protocol!(Set);
 
 impl std::fmt::Display for Set {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "pset")
+        write!(f, "pset([")?;
+
+        let length = self.value.size();
+        for (index, element) in self.value.iter().enumerate() {
+            write!(f, "{}", element)?;
+            if index != length - 1 {
+                write!(f, ", ")?;
+            }
+        }
+        write!(f, "])")
     }
 }
 
