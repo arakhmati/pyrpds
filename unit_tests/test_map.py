@@ -204,6 +204,7 @@ def test_hash():
 
     assert hash(x) == hash(y)
 
+
 @pytest.mark.skip("pyrpds.pvector is order-agnostic right now")
 def test_same_hash_when_content_the_same_but_underlying_vector_size_differs():
     x = pmap(dict((x, x) for x in range(1000)))
@@ -256,6 +257,7 @@ def test_equal_to_dict():
 
     assert y == x
     assert not (y != x)
+
 
 @pytest.mark.skip("Bucket size is not a supported argument right now!")
 def test_equal_with_different_bucket_sizes():
