@@ -4,8 +4,8 @@ use pyo3::class::PyObjectProtocol;
 use pyo3::prelude::{pyclass, pyfunction, pymethods, pyproto, PyModule, PyObject, PyResult};
 use pyo3::types::{PyDict, PyTuple};
 use pyo3::{
-    exceptions, wrap_pyfunction, AsPyRef, ObjectProtocol, Py, PyAny, PyCell, PyErr, PyIterProtocol,
-    PyMappingProtocol, PyRefMut, PySequenceProtocol, Python, ToPyObject,
+    exceptions, wrap_pyfunction, AsPyRef, IntoPy, ObjectProtocol, Py, PyAny, PyCell, PyErr,
+    PyIterProtocol, PyMappingProtocol, PyRefMut, PySequenceProtocol, Python, ToPyObject,
 };
 
 use crate::object::{extract_py_object, Object};
@@ -29,7 +29,7 @@ impl Map {
 
 #[pymethods]
 impl Map {
-    pub fn set(&mut self, py_key: PyObject, py_value: PyObject) -> PyResult<Self> {
+    pub fn set(&self, py_key: PyObject, py_value: PyObject) -> PyResult<Self> {
         let new_self = Self {
             value: self
                 .value
@@ -37,49 +37,101 @@ impl Map {
         };
         Ok(new_self)
     }
+    pub fn discard(&self, py_object: PyObject) -> PyResult<Self> {
+        let object = Object::new(py_object);
 
-    pub fn remove(&mut self, py_key: PyObject) -> PyResult<Self> {
         let new_self = Self {
-            value: self.value.remove(&Object::new(py_key)),
+            value: self.value.remove(&object),
         };
+
+        Ok(new_self)
+    }
+
+    pub fn remove(&self, py_key: PyObject) -> PyResult<Self> {
+        let key = Object::new(py_key);
+
+        if !self.value.contains_key(&key) {
+            return Err(PyErr::new::<exceptions::KeyError, _>(key.to_string()));
+        }
+
+        let new_self = Self {
+            value: self.value.remove(&key),
+        };
+
         Ok(new_self)
     }
 
     pub fn get(&self, py_key: PyObject) -> PyResult<PyObject> {
         let key = Object::new(py_key);
         if !self.value.contains_key(&key) {
-            return Err(PyErr::new::<exceptions::KeyError, _>("Key not found!"));
+            return Err(PyErr::new::<exceptions::KeyError, _>(key.to_string()));
         }
         extract_py_object(self.value.get(&key))
     }
 
-    pub fn keys(&self) -> PyResult<crate::iterators::PyObjectIterator> {
-        let mut keys = std::vec::Vec::new();
+    pub fn keys(&self) -> PyResult<crate::vector::Vector> {
+        let mut keys = crate::vector::Vector::new();
         for element in self.value.keys() {
-            keys.push(extract_py_object(Some(element))?)
+            keys = keys.append(extract_py_object(Some(element))?)?;
         }
-        Ok(crate::iterators::PyObjectIterator::new(keys.into_iter()))
+        Ok(keys)
     }
 
-    pub fn values(&self) -> PyResult<crate::iterators::PyObjectIterator> {
-        let mut values = std::vec::Vec::new();
+    pub fn values(&self) -> PyResult<crate::vector::Vector> {
+        let mut values = crate::vector::Vector::new();
         for element in self.value.values() {
-            values.push(extract_py_object(Some(element))?)
+            values = values.append(extract_py_object(Some(element))?)?;
         }
-        Ok(crate::iterators::PyObjectIterator::new(values.into_iter()))
+        Ok(values)
     }
 
-    pub fn items(&self) -> PyResult<crate::iterators::PyObjectPairIterator> {
-        let mut items = std::vec::Vec::new();
+    pub fn itervalues(&self) -> PyResult<crate::vector::Vector> {
+        self.values()
+    }
+
+    pub fn items(&self) -> PyResult<crate::vector::Vector> {
+        let gil_guard = Python::acquire_gil();
+        let py = gil_guard.python();
+
+        let mut items = crate::vector::Vector::new();
         for (key, value) in self.value.iter() {
-            items.push((
+            let element = vec![
                 extract_py_object(Some(key))?,
                 extract_py_object(Some(value))?,
-            ))
+            ];
+            let element = PyTuple::new(py, element);
+            let element = Py::from(element);
+            items = items.append(element.into_py(py))?;
         }
-        Ok(crate::iterators::PyObjectPairIterator::new(
-            items.into_iter(),
-        ))
+        Ok(items)
+    }
+
+    pub fn iteritems(&self) -> PyResult<crate::vector::Vector> {
+        self.items()
+    }
+
+    #[allow(clippy::needless_pass_by_value)]
+    #[args(args = "*")]
+    pub fn update(&self, args: &PyTuple) -> PyResult<Self> {
+        let gil_guard = Python::acquire_gil();
+        let py = gil_guard.python();
+
+        let mut new_self = Self {
+            value: self.value.clone(),
+        };
+
+        for arg in args.iter() {
+            let object: PyObject = arg.into_py(py);
+            let iterator = arg.iter().unwrap();
+
+            for key in iterator {
+                let key: PyObject = key.unwrap().into_py(py);
+                let value = object.call_method1(py, "__getitem__", (key.clone_ref(py),))?;
+                new_self = new_self.set(key, value)?;
+            }
+        }
+
+        Ok(new_self)
     }
 }
 
@@ -132,7 +184,16 @@ py_object_protocol!(Map);
 
 impl std::fmt::Display for Map {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "pmap")
+        write!(f, "pmap({{")?;
+
+        let length = self.value.size();
+        for (index, (key, value)) in self.value.iter().enumerate() {
+            write!(f, "{}: {}", key, value)?;
+            if index != length - 1 {
+                write!(f, ", ")?;
+            }
+        }
+        write!(f, "}})")
     }
 }
 

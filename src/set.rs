@@ -29,14 +29,14 @@ impl Set {
 
 #[pymethods]
 impl Set {
-    pub fn add(&mut self, py_object: PyObject) -> PyResult<Self> {
+    pub fn add(&self, py_object: PyObject) -> PyResult<Self> {
         let new_self = Self {
             value: self.value.insert(Object::new(py_object)),
         };
         Ok(new_self)
     }
 
-    pub fn discard(&mut self, py_object: PyObject) -> PyResult<Self> {
+    pub fn discard(&self, py_object: PyObject) -> PyResult<Self> {
         let object = Object::new(py_object);
 
         let new_self = Self {
@@ -46,11 +46,10 @@ impl Set {
         Ok(new_self)
     }
 
-    pub fn remove(&mut self, py_object: PyObject) -> PyResult<Self> {
+    pub fn remove(&self, py_object: PyObject) -> PyResult<Self> {
         let object = Object::new(py_object);
 
         if !self.value.contains(&object) {
-            println!("GOT EM {}", !self.value.contains(&object));
             return Err(PyErr::new::<exceptions::KeyError, _>(
                 "Element is not in the set!",
             ));
@@ -63,12 +62,12 @@ impl Set {
         Ok(new_self)
     }
 
-    pub fn isdisjoint(&mut self, other: &Set) -> PyResult<bool> {
+    pub fn isdisjoint(&self, other: &Set) -> PyResult<bool> {
         Ok(self.value.is_disjoint(&other.value))
     }
 
     #[allow(clippy::needless_pass_by_value)]
-    pub fn update(&mut self, iterator: PyObject) -> PyResult<Self> {
+    pub fn update(&self, iterator: PyObject) -> PyResult<Self> {
         let gil_guard = Python::acquire_gil();
         let py = gil_guard.python();
 

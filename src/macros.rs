@@ -23,7 +23,7 @@ macro_rules! py_object_protocol {
                     return match op {
                         pyo3::class::basic::CompareOp::Eq => Ok(false),
                         pyo3::class::basic::CompareOp::Ne => Ok(true),
-                        _ => Err(PyErr::new::<exceptions::RuntimeError, _>(
+                        _ => Err(PyErr::new::<exceptions::TypeError, _>(
                             "Invalid comparison operator!".to_string(),
                         )),
                     };
@@ -33,7 +33,7 @@ macro_rules! py_object_protocol {
                 match op {
                     pyo3::class::basic::CompareOp::Eq => Ok(self.value == other.value),
                     pyo3::class::basic::CompareOp::Ne => Ok(self.value != other.value),
-                    _ => Err(PyErr::new::<exceptions::RuntimeError, _>(
+                    _ => Err(PyErr::new::<exceptions::TypeError, _>(
                         "Invalid comparison operator!".to_string(),
                     )),
                 }

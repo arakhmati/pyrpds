@@ -71,7 +71,7 @@ impl Vector {
         }
     }
 
-    pub fn append(&mut self, py_object: PyObject) -> PyResult<Self> {
+    pub fn append(&self, py_object: PyObject) -> PyResult<Self> {
         let new_self = Self {
             value: self.value.push_back(Object::new(py_object)),
         };
@@ -79,7 +79,7 @@ impl Vector {
     }
 
     #[allow(clippy::needless_pass_by_value)]
-    pub fn extend(&mut self, iterator: PyObject) -> PyResult<Self> {
+    pub fn extend(&self, iterator: PyObject) -> PyResult<Self> {
         let gil_guard = Python::acquire_gil();
         let py = gil_guard.python();
 

@@ -382,7 +382,6 @@ def test_remove():
 
 def test_remove_first_only():
     seq = pvector([1, 2, 3, 2, 1])
-    print(list(seq.remove(2)))
     assert seq.remove(2) == pvector([1, 3, 2, 1])
 
 
@@ -489,11 +488,9 @@ def test_compare_same_vectors():
     v = pvector([1, 2])
     assert v == v
     assert pvector() == pvector()
-    print(pvector() == pvector())
 
 
 def test_compare_with_other_type_of_object():
-    print(pvector([1, 2]) != "foo")
     assert pvector([1, 2]) != "foo"
 
 

@@ -82,8 +82,8 @@ def test_literalish_works():
 
 
 def test_supports_hash():
-    # assert hash(s(1, 2)) == hash(s(1, 2))
     # pyrpds.pvector is order-agnostic
+    # assert hash(s(1, 2)) == hash(s(1, 2))
     assert hash(s(1)) == hash(s(1))
 
 

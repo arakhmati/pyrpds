@@ -29,7 +29,7 @@ impl List {
 
 #[pymethods]
 impl List {
-    pub fn push_front(&mut self, py_object: PyObject) -> PyResult<Self> {
+    pub fn push_front(&self, py_object: PyObject) -> PyResult<Self> {
         let new_self = Self {
             value: self.value.push_front(Object::new(py_object)),
         };
